@@ -1,64 +1,65 @@
 import React from 'react'
-import TextField from '@mui/material/TextField';
-import { Box, InputAdornment, Slider } from '@mui/material';
+import { Slider } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import NativeSelect from '@mui/material/NativeSelect';
 import KeyboardAltTwoToneIcon from '@mui/icons-material/KeyboardAltTwoTone';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFontSize } from '../../../features/FontSizeSlice';
+import { SetTextTest } from '../../../features/TextTestSlice';
+import { setNameFontToSearch } from '../../../features/SearchByNameSlice';
 function ToolBar() {
-    const [value, setValue] = React.useState('Controlled');
-    const [PX, setPX] = React.useState(30);
-
+    const dispatch = useDispatch();
+    const PXfromReducer = useSelector((state) => state.FontSizeSlice.fontSize);
     const handleChangePx = (event) => {
-        setPX(event.target.value);
+        dispatch(setFontSize(event.target.value));
     };
-    const handleChange = (event) => {
-        setValue(event.target.value);
+    const handleChangeText = async (event) => {
+        dispatch(SetTextTest(event.target.value));
     };
-    console.log(value)
+    const handleNameSearch = (event) => {
+        dispatch(setNameFontToSearch(event.target.value));
+    };
+
+
+
+
     return (
 
         <div className="flex justify-center  items-center pt-10">
-            <div className="sm:flex  block sm:border-2 sm:border-slate-700 sm:border-opacity-40 sm:rounded-full sm:overflow-hidden">
+            <div className="sm:flex justify-center items-center pl-3 block sm:border-2 sm:border-slate-700 sm:border-opacity-40 sm:rounded-full sm:overflow-hidden">
 
                 <div className="flex relative m-2 sm:m-0">
                     <span className="inline-flex  items-center px-3 border-t bg-inherit border-l border-b  border-gray-700 text-gray-500 shadow-sm text-sm">
-                        <SearchIcon className="text-gray-400" />
+                        <SearchIcon className="text-gray-400 2xl:scale-150" />
                     </span>
-                    <input type="search" id="email-with-icon" className="   flex-1 appearance-none border border-gray-700 w-full py-2 px-4 bg-inherit text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent" name="fontName" placeholder="ناوی فۆنت" />
+                    <input type="text" onChange={handleNameSearch} className="  placeholder:2xl:text-3xl flex-1 appearance-none border border-gray-700 w-full py-2 px-4 bg-inherit text-gray-700 dark:text-slate-50 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent" name="fontName" placeholder="ناوی فۆنت" />
                 </div>
 
                 <div className="flex relative m-2 sm:m-0">
                     <span className="inline-flex  items-center px-3 border-t bg-inherit border-l border-b  border-gray-700 text-gray-500 shadow-sm text-sm">
-                        <KeyboardAltTwoToneIcon className="text-gray-400" />
+                        <KeyboardAltTwoToneIcon className="text-gray-400 2xl:scale-150" />
 
                     </span>
-                    <input type="text" id="email-with-icon" className=" flex-1 appearance-none border border-gray-700 w-full py-2 px-4 bg-inherit text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent" name="testFont" placeholder="شتێک بنوسە" />
+                    <input onChange={handleChangeText} type="text" className=" placeholder:2xl:text-3xl flex-1 appearance-none border border-gray-700 w-full py-2 px-4 bg-inherit text-gray-700 dark:text-slate-50 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent" name="testFont" placeholder="شتێک بنوسە" />
                 </div>
 
 
                 <div className="flex items-center">
 
-                    <p className='m-2 p-2 dark:text-slate-50 text-slate-900'>
-                        {PX} قەبارە
+                    <p className='m-2 mr-5 p-2 dark:text-slate-50 text-slate-900 2xl:text-3xl'>
+                        {PXfromReducer} قەبارە
                     </p>
 
 
                     <div className="w-32 ">
 
                         <Slider
-                            size="small"
+                            size="medium"
                             defaultValue={30}
 
                             aria-label="Small"
                             onChange={handleChangePx}
                             min={10}
-                            max={350}
-                            onChangeCommitted={() => console.log(PX)}
+                            max={150}
                             color='success'
 
                         />

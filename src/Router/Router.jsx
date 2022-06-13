@@ -2,7 +2,7 @@ import React from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import About from '../components/about/About'
 import Home from '../components/home/Home'
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 
 function Router() {
     const locations = useLocation()
