@@ -1,90 +1,238 @@
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import FontCards from './FontCards'
-import { useSelector } from 'react-redux';
-import { IconButton } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Box, IconButton, Skeleton } from '@mui/material';
 import ExpandCircleDownTwoToneIcon from '@mui/icons-material/ExpandCircleDownTwoTone';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-
+import { useDownloadFontMutation, useGetFontsDataQuery } from '../../../app/appApi';
+import { useSearchParams } from 'react-router-dom';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import MyModal from '../../util/Modal';
+import { SetOpenFontModal } from '../../../features/OpenFontModalSlice';
+async function loadFonts(fontname, fontUrl) {
+    const font = new FontFace(fontname, `url(${fontUrl})`);
+    // wait for font to be loaded
+    await font.load();
+    // add font to document
+    document.fonts.add(font);
+    // enable font with CSS class
+    console.log('fonts loaded')
+}
 function Main() {
     const TextTestFromReducer = useSelector((state) => state.TextTestSlice.text);
+    const PXfromReducer = useSelector((state) => state.FontSizeSlice.fontSize);
     const SearchByName = useSelector((state) => state.SearchByNameSlice.name);
+    const dispatch = useDispatch();
     const [Load, setLoad] = useState(25)
-    const [SortBy, setSortBy] = useState('newest')
-    let Data = []
-    for (let i = 0; i <= 100; i++) {
-        Data.push({
-            fontname: `ئەمە فۆنتی ${i}`,
-            stylecount: i,
-            text: `ئەمە  شێوازی فۆنتی وەرگیراوە لە سێرڤەر  ${i}`
-        })
-    }
+    const [searchParams, setSearchParams] = useSearchParams();
+    const sort = searchParams.get("sort");
+    const { data: Data } = useGetFontsDataQuery(sort)
+    const OpenModal = useSelector((state) => state.OpenFontsModal.isOpen)
+    const [SetFontsData, setSetFontsData] = useState()
+    const [sendFontId, { data, isLoading }] = useDownloadFontMutation();
     const sortByHandler = (e) => {
-        setSortBy(e.target.value)
+        setSearchParams({ sort: e.target.value })
     }
-
+    if (!sort) {
+        setSearchParams({ sort: 'new' })
+    }
+    useEffect(() => {
+        if (Data) {
+            Data.forEach(item => {
+                loadFonts(item?.name.english, item?.regular)
+            });
+        }
+    }, [Data])
+    const downloadFromUrlHandler = (url) => {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = link.setAttribute('download', 'font.ttf' || 'font.woff' || 'font.woff2' || 'font.eot' || 'font.svg' || 'font.otf');
+        link.click();
+    }
+    const setFontDataHandler = (data) => {
+        setSetFontsData(data)
+        sendFontId({ fontId: data._id })
+    }
 
     return (
-        <main>
+        <main className='min-h-screen'>
             <div className="flex justify-center items-center py-2 px-4">
                 <FormControl color='success' focused={true} sx={{ m: 1, minWidth: 120 }} size="small" >
                     <InputLabel id="demo-select-small">رێکخستن</InputLabel>
                     <Select
                         labelId="demo-select-small"
                         id="demo-select-small"
-                        value={SortBy}
+                        value={sort}
                         label="Sort"
                         onChange={sortByHandler}
+                        sx={{ color: 'green' }}
+
 
                     >
 
-                        <MenuItem value='newest'>ىوێ</MenuItem>
-                        <MenuItem value='oldest'>كۆن</MenuItem>
+                        <MenuItem value='new'>نوێ</MenuItem>
+                        <MenuItem value='old'>كۆن</MenuItem>
                         <MenuItem value='popular'>بەناوبانگ</MenuItem>
                     </Select>
                 </FormControl>
             </div>
-            <div className="grid place-items-center items-stretch py-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-5">
+            <div className="grid place-items-center  items-stretch py-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-5">
                 {
                     SearchByName
                         ?
-                        Data.filter(item => item.fontname.includes(SearchByName)).slice(0, 50).map((item, index) => {
-                            return <FontCards key={index} fontname={item.fontname} stylecount={item.stylecount} text={item.text} />
+                        Data?.filter(item => item?.name?.kurdish.includes(SearchByName) || item?.name?.english.toLowerCase().includes(SearchByName.toLowerCase())).slice(0, 50).map((item, index) => {
+                            return <FontCards
+                                key={index}
+                                fontname={item?.name?.kurdish}
+                                stylecount={item?.styles.length}
+                                text={TextTestFromReducer ? TextTestFromReducer : item.testText}
+                                textstyles={{
+                                    fontFamily: item?.name?.english,
+                                    fontSize: PXfromReducer
+                                }}
+                                fontnamestyle={{
+                                    fontFamily: item?.name?.english,
+                                }}
+                                onClick={() => {
+                                    dispatch(SetOpenFontModal(!OpenModal))
+                                    setFontDataHandler(item)
+
+                                }}
+
+                            />
                         })
                         :
-                        Data && SortBy === 'newest' ? Data?.slice(-Load + 1)?.map((item, index) => {
+                        Data && Data?.slice(-Load + 1)?.map((item, index) => {
                             return (
-                                <FontCards
+                                <Suspense
                                     key={index}
-                                    fontname={item.fontname}
-                                    stylecount={item.stylecount}
-                                    text={TextTestFromReducer ? TextTestFromReducer : item.text}
-                                />
-                            )
-                        }).reverse()
-                            : Data?.slice(0, Load + 1)?.map((item, index) => {
-                                return (
+                                    fallback={<Skeleton variant="rectangular" width={310} height={158} />}
+
+                                >
                                     <FontCards
-                                        key={index}
-                                        fontname={item.fontname}
-                                        stylecount={item.stylecount}
-                                        text={TextTestFromReducer ? TextTestFromReducer : item.text}
+                                        fontname={item?.name?.kurdish}
+                                        stylecount={item?.styles.length}
+                                        text={TextTestFromReducer ? TextTestFromReducer : item.testText}
+                                        textstyles={{
+                                            fontFamily: item?.name?.english,
+                                            fontSize: PXfromReducer
+                                        }}
+                                        fontnamestyle={{
+                                            fontFamily: item?.name?.english,
+                                        }}
+                                        onClick={() => {
+                                            dispatch(SetOpenFontModal(!OpenModal))
+                                            setFontDataHandler(item)
+
+                                        }}
+
                                     />
-                                )
-                            })
+                                </Suspense>
+                            )
+                        })
+
+
 
                 }
+
             </div>
             {
-                !SearchByName && Load < Data.length &&
+                !SearchByName && Load < Data?.length &&
                 <div className="flex justify-center items-center">
                     <IconButton onClick={() => setLoad(Load + 15)} aria-label="more" size="large" color='success'>
                         <ExpandCircleDownTwoToneIcon />
                     </IconButton>
                 </div>
             }
+
+            <MyModal
+                className=" bg-slate-200 dark:bg-slate-700 dark:bg-opacity-90 bg-opacity-70  backdrop-blur-sm rounded-md shadow-md"
+                children={
+                    <>
+                        <Box className='flex justify-between items-center flex-wrap '>
+                            <h1 className='text-slate-900 text-opacity-75 dark:text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg xl:text-2xl' >
+                                {SetFontsData?.name?.kurdish}
+                            </h1>
+
+
+                            <h1 className='text-slate-900 text-opacity-75 dark:text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg xl:text-2xl'  >
+                                شێواز
+                                &nbsp;
+                                {SetFontsData?.styles?.length + 1}
+                            </h1>
+                        </Box>
+                        <hr />
+                        <h1 className='text-slate-900 dark:text-slate-50 p-2 text-center text-xl lg:text-2xl xl:text-3xl' >
+                            شێوازەکان
+                        </h1>
+                        <Box sx={{
+                            maxHeight: '80vh',
+                            overflowY: 'auto',
+                        }}>
+
+                            <Box sx={{
+                                direction: 'ltr',
+                            }} className='flex justify-between items-center'>
+                                <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl'  >
+                                    Regular
+                                </h1>
+                                <IconButton
+                                    disabled={isLoading}
+                                    onClick={() => data && downloadFromUrlHandler(data?.regular)}
+                                    color="primary">
+                                    <FileDownloadOutlinedIcon />
+                                </IconButton>
+                            </Box>
+                            <hr />
+
+
+                            {
+                                data?.styles?.map((item, i) => {
+                                    return (
+                                        <div key={i}>
+                                            <Box
+                                                sx={{
+                                                    direction: 'ltr',
+                                                }} className='flex justify-between items-center'>
+
+                                                <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl'  >
+                                                    {item.name}
+                                                </h1>
+                                                <IconButton
+                                                    disabled={isLoading}
+                                                    onClick={() => data && downloadFromUrlHandler(item?.url)}
+                                                    color="primary">
+                                                    <FileDownloadOutlinedIcon />
+                                                </IconButton>
+                                            </Box>
+                                            <hr />
+                                        </div>
+                                    )
+                                })
+                            }
+
+                        </Box>
+
+                        <Box sx={{
+                            direction: 'ltr',
+                        }} className='flex justify-between items-center'>
+                            <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl'  >
+                                Download Zip
+                            </h1>
+                            <IconButton
+                                disabled={isLoading}
+                                onClick={() => data && downloadFromUrlHandler(data?.zipUrl)}
+                                color="primary">
+                                <FileDownloadOutlinedIcon />
+                            </IconButton>
+                        </Box>
+                        <hr />
+
+                    </>
+                } />
         </main >
     )
 }

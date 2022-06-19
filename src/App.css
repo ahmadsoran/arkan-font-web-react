@@ -5,6 +5,7 @@
   margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
           box-sizing: border-box;
           font-family: 'NRT-Reg';
 }
@@ -17,6 +18,7 @@ body {
    margin: 0;
   padding: 0;
   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
           box-sizing: border-box;
           /* font-family: 'NRT-Reg'; */
  }
@@ -25,3 +27,41 @@ body {
   padding: 2% 5%;
 }/*# sourceMappingURL=App.css.map */
  
+.text-gardient {
+  background: linear-gradient(to right, #53BF9D 45%, #FFC54D 60%);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 150% 100%;
+  -webkit-animation: Gradient 8s linear infinite;
+  -moz-animation: Gradient 8s linear infinite;
+  -o-animation: Gradient 8s linear infinite;
+  animation: Gradient 8s linear infinite;
+  position: relative;
+  width: fit-content;
+}
+.text-gardient::after{
+ content: "";
+ position: absolute;
+ bottom: -1%;
+ right: 0;
+ width: 55%;
+ height: 3px;
+ background: linear-gradient(to right, #FFC54D 45%, #53BF9D 60%);
+ background-size: 250% 100%;
+ -webkit-animation: Gradient 8s linear infinite;
+ -moz-animation: Gradient 8s linear infinite;
+ -o-animation: Gradient 8s linear infinite;
+ animation: Gradient 8s linear infinite;
+}
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  
+}
+
