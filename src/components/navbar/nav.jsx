@@ -32,7 +32,15 @@ export default function ButtonAppBar() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <NavMobileCollapse class={`${OpenNavMenu ? 'translate-y-0 ' : '-translate-y-full'}`} />
+            <NavMobileCollapse
+                children={
+                    <>
+                        <MyLinks to={'/'} onClick={() => setOpenNavMenu(false)} children={'سەرەکی'} className='text-slate-900 mx-2 dark:text-slate-50' />
+                        <MyLinks to={'/about'} children={'دەربارە'} onClick={() => setOpenNavMenu(false)} className='text-slate-900 mx-2 dark:text-slate-50' />
+                        <MyLinks to={'/social'} children={'سۆشیاڵ'} onClick={() => setOpenNavMenu(false)} className='text-slate-900 mx-2 dark:text-slate-50' />
+                    </>
+                }
+                class={`${OpenNavMenu ? 'translate-y-0 ' : '-translate-y-full'}`} />
 
 
 

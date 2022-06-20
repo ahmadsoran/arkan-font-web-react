@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import ToolBar from './home-components/ToolBar'
 import Main from './home-components/Main'
@@ -6,7 +6,7 @@ import { useSendVisitsQuery } from '../../app/appApi'
 import CopyRight from '../CopyRight'
 function Home() {
     const contry = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const { data } = useSendVisitsQuery(contry)
+    useSendVisitsQuery(contry)
 
 
     return (

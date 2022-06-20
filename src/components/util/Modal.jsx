@@ -26,6 +26,7 @@ export default function MyModal(props) {
                 onClose={() => dispatch(SetOpenFontModal(!OpenModal))}
                 aria-labelledby="keep-mounted-modal-title"
                 aria-describedby="keep-mounted-modal-description"
+
             >
                 <Box
                     className={props.className}

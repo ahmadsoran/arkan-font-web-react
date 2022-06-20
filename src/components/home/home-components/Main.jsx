@@ -18,8 +18,8 @@ async function loadFonts(fontname, fontUrl) {
     await font.load();
     // add font to document
     document.fonts.add(font);
-    // enable font with CSS class
-    console.log('fonts loaded')
+    // add weght to font
+
 }
 function Main() {
     const TextTestFromReducer = useSelector((state) => state.TextTestSlice.text);
@@ -36,13 +36,12 @@ function Main() {
     const sortByHandler = (e) => {
         setSearchParams({ sort: e.target.value })
     }
-    if (!sort) {
-        setSearchParams({ sort: 'new' })
-    }
+
     useEffect(() => {
         if (Data) {
             Data.forEach(item => {
                 loadFonts(item?.name.english, item?.regular)
+
             });
         }
     }, [Data])
@@ -65,7 +64,7 @@ function Main() {
                     <Select
                         labelId="demo-select-small"
                         id="demo-select-small"
-                        value={sort}
+                        value={sort || ''}
                         label="Sort"
                         onChange={sortByHandler}
                         sx={{ color: 'green' }}
@@ -73,48 +72,50 @@ function Main() {
 
                     >
 
-                        <MenuItem value='new'>نوێ</MenuItem>
                         <MenuItem value='old'>كۆن</MenuItem>
+                        <MenuItem value='new'>نوێ</MenuItem>
                         <MenuItem value='popular'>بەناوبانگ</MenuItem>
+                        <MenuItem value='A_Z'>A - Z</MenuItem>
+                        <MenuItem value='Z_A'>Z - A</MenuItem>
                     </Select>
                 </FormControl>
             </div>
             <div className="grid place-items-center  items-stretch py-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-5">
-                {
-                    SearchByName
-                        ?
-                        Data?.filter(item => item?.name?.kurdish.includes(SearchByName) || item?.name?.english.toLowerCase().includes(SearchByName.toLowerCase())).slice(0, 50).map((item, index) => {
-                            return <FontCards
-                                key={index}
-                                fontname={item?.name?.kurdish}
-                                stylecount={item?.styles.length}
-                                text={TextTestFromReducer ? TextTestFromReducer : item.testText}
-                                textstyles={{
-                                    fontFamily: item?.name?.english,
-                                    fontSize: PXfromReducer
-                                }}
-                                fontnamestyle={{
-                                    fontFamily: item?.name?.english,
-                                }}
-                                onClick={() => {
-                                    dispatch(SetOpenFontModal(!OpenModal))
-                                    setFontDataHandler(item)
+                <Suspense
+                    fallback={<Skeleton variant="rectangular" width={310} height={158} />}
 
-                                }}
-
-                            />
-                        })
-                        :
-                        Data && Data?.slice(-Load + 1)?.map((item, index) => {
-                            return (
-                                <Suspense
+                >
+                    {
+                        SearchByName
+                            ?
+                            Data?.filter(item => item?.name?.kurdish.includes(SearchByName) || item?.name?.english.toLowerCase().includes(SearchByName.toLowerCase())).slice(0, 50).map((item, index) => {
+                                return <FontCards
                                     key={index}
-                                    fallback={<Skeleton variant="rectangular" width={310} height={158} />}
+                                    fontname={item?.name?.kurdish}
+                                    stylecount={item?.styles.length + 1}
+                                    text={TextTestFromReducer ? TextTestFromReducer : item.testText}
+                                    textstyles={{
+                                        fontFamily: item?.name?.english,
+                                        fontSize: PXfromReducer
+                                    }}
+                                    fontnamestyle={{
+                                        fontFamily: item?.name?.english,
+                                    }}
+                                    onClick={() => {
+                                        dispatch(SetOpenFontModal(!OpenModal))
+                                        setFontDataHandler(item)
 
-                                >
+                                    }}
+
+                                />
+                            })
+                            :
+                            Data && Data?.slice(-Load + 1)?.map((item, index) => {
+                                return (
                                     <FontCards
+                                        key={index}
                                         fontname={item?.name?.kurdish}
-                                        stylecount={item?.styles.length}
+                                        stylecount={item?.styles.length + 1}
                                         text={TextTestFromReducer ? TextTestFromReducer : item.testText}
                                         textstyles={{
                                             fontFamily: item?.name?.english,
@@ -130,14 +131,14 @@ function Main() {
                                         }}
 
                                     />
-                                </Suspense>
-                            )
-                        })
+                                )
+                            })
 
 
 
-                }
+                    }
 
+                </Suspense>
             </div>
             {
                 !SearchByName && Load < Data?.length &&
@@ -171,6 +172,7 @@ function Main() {
                         <Box sx={{
                             maxHeight: '80vh',
                             overflowY: 'auto',
+
                         }}>
 
                             <Box sx={{
@@ -198,7 +200,7 @@ function Main() {
                                                     direction: 'ltr',
                                                 }} className='flex justify-between items-center'>
 
-                                                <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl'  >
+                                                <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl break-words break-all'  >
                                                     {item.name}
                                                 </h1>
                                                 <IconButton
