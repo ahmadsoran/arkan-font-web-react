@@ -1,5 +1,4 @@
-import { Avatar, Box } from '@mui/material'
-import React from 'react'
+import { Box } from '@mui/material'
 import img from '../../assets/img/arkanLogo.jpg'
 import { motion } from 'framer-motion'
 function About() {
