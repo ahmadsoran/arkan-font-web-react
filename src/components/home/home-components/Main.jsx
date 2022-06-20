@@ -98,12 +98,12 @@ function Main() {
         <main className='min-h-screen'>
             <div className="flex justify-center items-center py-2 px-4">
                 <FormControl color='success' focused={true} sx={{ m: 1, minWidth: 120 }} size="small" >
-                    <InputLabel id="demo-select-small">رێکخستن</InputLabel>
+                    <InputLabel id="demo-select-large"> رێکخستن </InputLabel>
                     <Select
-                        labelId="demo-select-small"
-                        id="demo-select-small"
+                        labelId="demo-select-large"
+                        id="demo-select-large"
                         value={sort || ''}
-                        label="Sort"
+                        label="رێکخس"
                         onChange={sortByHandler}
                         sx={{ color: 'green' }}
 
@@ -123,7 +123,7 @@ function Main() {
                         labelId="demo-select-large"
                         id="demo-select-large"
                         value={category || ''}
-                        label="category"
+                        label="پۆلێنەکا"
                         onChange={catagoryHandler}
                         sx={{ color: 'green' }}
 
@@ -166,7 +166,7 @@ function Main() {
                                 />
                             })
                             :
-                            Data && Data?.slice(-Load + 1)?.map((item, index) => {
+                            !FontFetch && Data && Data?.slice(-Load + 1)?.map((item, index) => {
                                 return (
                                     <FontCards
                                         key={index}
