@@ -21,22 +21,61 @@ async function loadFonts(fontname, fontUrl) {
     // add weght to font
 
 }
+const catagory = [
+    'فۆنتی کەناڵ و کۆمپانیاکان',
+    'فۆنتی منداڵانە',
+    'فۆنتی سادە',
+    'فۆنتی دەستنووس',
+    'فۆنتی ڕوقعە',
+    'فۆنتی ثولث',
+    'فۆنتی دیوانی',
+    'فۆنتی نەسخ',
+    'فۆنتی کوفی',
+    'فۆنتی ئازاد',
+    'فۆنتی نەستەعلیق',
+    'فۆنتی ناونیشان',
+    'فۆنتی زەخرەفە و ڕازاوە',
+    'فۆنتەکانی حەسەن',
+    'فۆنتەکانی GE',
+    'فۆنتەکانی دیما',
+]
 function Main() {
     const TextTestFromReducer = useSelector((state) => state.TextTestSlice.text);
     const PXfromReducer = useSelector((state) => state.FontSizeSlice.fontSize);
     const SearchByName = useSelector((state) => state.SearchByNameSlice.name);
     const dispatch = useDispatch();
     const [Load, setLoad] = useState(25)
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams({
+        sort: '',
+        catagory: '',
+    });
     const sort = searchParams.get("sort");
-    const { data: Data } = useGetFontsDataQuery(sort)
+    const category = searchParams.get("category");
+    const { data: Data } = useGetFontsDataQuery({
+
+        sort: sort,
+        category: category,
+
+
+    });
     const OpenModal = useSelector((state) => state.OpenFontsModal.isOpen)
     const [SetFontsData, setSetFontsData] = useState()
     const [sendFontId, { data, isLoading }] = useDownloadFontMutation();
     const sortByHandler = (e) => {
-        setSearchParams({ sort: e.target.value })
+        /// set sort by
+        setSearchParams({
+            sort: e.target.value,
+            category: category
+        })
+    }
+    const catagoryHandler = (e) => {
+        setSearchParams({
+            sort: sort,
+            category: e.target.value
+        })
     }
 
+    console.log(category);
     useEffect(() => {
         if (Data) {
             Data.forEach(item => {
@@ -79,6 +118,24 @@ function Main() {
                         <MenuItem value='Z_A'>Z - A</MenuItem>
                     </Select>
                 </FormControl>
+                <FormControl color='success' focused={true} sx={{ m: 1, minWidth: 120 }} size="small" >
+                    <InputLabel id="demo-select-large">پۆلێنەکان</InputLabel>
+                    <Select
+                        labelId="demo-select-large"
+                        id="demo-select-large"
+                        value={category || ''}
+                        label="category"
+                        onChange={catagoryHandler}
+                        sx={{ color: 'green' }}
+
+
+                    >
+                        <MenuItem value='all' >All</MenuItem>
+                        {catagory?.map((item, index) => {
+                            return <MenuItem value={item} key={index}>{item}</MenuItem>
+                        })}
+                    </Select>
+                </FormControl>
             </div>
             <div className="grid place-items-center  items-stretch py-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-5">
                 <Suspense
@@ -91,7 +148,7 @@ function Main() {
                             Data?.filter(item => item?.name?.kurdish.includes(SearchByName) || item?.name?.english.toLowerCase().includes(SearchByName.toLowerCase())).slice(0, 50).map((item, index) => {
                                 return <FontCards
                                     key={index}
-                                    fontname={item?.name?.kurdish}
+                                    fontname={item?.name?.english}
                                     stylecount={item?.styles.length + 1}
                                     text={TextTestFromReducer ? TextTestFromReducer : item.testText}
                                     textstyles={{
@@ -114,7 +171,7 @@ function Main() {
                                 return (
                                     <FontCards
                                         key={index}
-                                        fontname={item?.name?.kurdish}
+                                        fontname={item?.name?.english}
                                         stylecount={item?.styles.length + 1}
                                         text={TextTestFromReducer ? TextTestFromReducer : item.testText}
                                         textstyles={{
