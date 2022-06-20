@@ -2,7 +2,7 @@ import React from 'react';
 import './dist/TailwindArkan.css'
 import Router from './Router/Router';
 import Nav from './components/navbar/nav';
-
+import './Router/App.css'
 
 function App() {
 

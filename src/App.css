@@ -1,27 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-* {
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-          box-sizing: border-box;
-          font-family: 'NRT-Reg';
-}
-
-@font-face {
-  font-family: 'NRT-Reg';
-  src: url('../assets/Fonts/NRT-Reg/NRT-Reg.ttf');
-}
-body {
-   margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-   -moz-box-sizing: border-box;
-          box-sizing: border-box;
-          /* font-family: 'NRT-Reg'; */
- }
 
 .my-container {
   padding: 2% 5%;

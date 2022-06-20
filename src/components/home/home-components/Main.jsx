@@ -51,7 +51,7 @@ function Main() {
     });
     const sort = searchParams.get("sort");
     const category = searchParams.get("category");
-    const { data: Data } = useGetFontsDataQuery({
+    const { data: Data, isFetching: FontFetch } = useGetFontsDataQuery({
 
         sort: sort,
         category: category,
@@ -137,10 +137,10 @@ function Main() {
                 </FormControl>
             </div>
             <div className="grid place-items-center  items-stretch py-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 px-5">
-                <Suspense
-                    fallback={<Skeleton variant="rectangular" width={310} height={158} />}
-
-                >
+                {FontFetch && [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
+                    return <Skeleton key={item} variant="rectangular" width={310} height={158} />
+                })}
+                <Suspense fallback={<Skeleton variant="rectangular" width={310} height={158} />} >
                     {
                         SearchByName
                             ?
@@ -211,12 +211,12 @@ function Main() {
                     <>
                         <Box className='flex justify-between items-center flex-wrap '>
                             <h1 className='text-slate-900 text-opacity-75 dark:text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg xl:text-2xl' >
-                                {SetFontsData?.name?.kurdish}
+                                {SetFontsData?.name?.english}
                             </h1>
 
 
                             <h1 className='text-slate-900 text-opacity-75 dark:text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg xl:text-2xl'  >
-                                شێواز
+                                کێش
                                 &nbsp;
                                 {SetFontsData?.styles?.length + 1}
                             </h1>
@@ -235,7 +235,7 @@ function Main() {
                                 direction: 'ltr',
                             }} className='flex justify-between items-center'>
                                 <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl'  >
-                                    Regular
+                                    {SetFontsData?.name?.english}  Regular
                                 </h1>
                                 <IconButton
                                     disabled={isLoading}
@@ -278,7 +278,7 @@ function Main() {
                             direction: 'ltr',
                         }} className='flex justify-between items-center'>
                             <h1 className='text-slate-900 dark:text-slate-50 sm:text-sm md:text-lg lg:text-xl xl:text-2xl'  >
-                                Download Zip
+                                {SetFontsData?.name?.english} Zip
                             </h1>
                             <IconButton
                                 disabled={isLoading}
