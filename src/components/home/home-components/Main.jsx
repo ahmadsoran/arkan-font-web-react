@@ -75,7 +75,6 @@ function Main() {
         })
     }
 
-    console.log(category);
     useEffect(() => {
         if (Data) {
             Data.forEach(item => {
@@ -132,7 +131,7 @@ function Main() {
                     >
                         <MenuItem value='all' >All</MenuItem>
                         {catagory?.map((item, index) => {
-                            return <MenuItem value={item} key={index}>{item}</MenuItem>
+                            return <MenuItem value={item} style={{ fontFamily: 'NRT-Reg' }} key={index}>{item}</MenuItem>
                         })}
                     </Select>
                 </FormControl>
