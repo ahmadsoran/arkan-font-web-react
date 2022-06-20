@@ -1,4 +1,3 @@
-import React from 'react'
 import img from '../assets/img/8.svg'
 function NOTFOUND404() {
     return (
