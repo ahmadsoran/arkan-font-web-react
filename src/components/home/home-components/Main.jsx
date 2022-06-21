@@ -46,7 +46,7 @@ function Main() {
     const dispatch = useDispatch();
     const [Load, setLoad] = useState(25)
     const [searchParams, setSearchParams] = useSearchParams({
-        sort: '',
+        sort: 'new',
         catagory: '',
     });
     const sort = searchParams.get("sort");
