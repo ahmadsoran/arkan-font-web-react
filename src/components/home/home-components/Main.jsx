@@ -216,7 +216,7 @@ function Main() {
 
 
                             <h1 className='text-slate-900 text-opacity-75 dark:text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg xl:text-2xl'  >
-                                کێش
+                                شێواز
                                 &nbsp;
                                 {SetFontsData?.styles?.length + 1}
                             </h1>
