@@ -20,7 +20,7 @@ function FontCards(props) {
                 <>
                     <div className="flex justify-between  items-center ">
                         <h1 className='text-slate-900 dark:text-slate-50 text-lg opacity-60 2xl:text-4xl' style={props.fontnamestyle}>{props.fontname}</h1>
-                        <p className=' text-slate-900 dark:text-slate-50 text-xs opacity-60 xl:text-md 2xl:text-2xl '>کێش {props.stylecount}</p>
+                        <p className=' text-slate-900 dark:text-slate-50 text-xs opacity-60 xl:text-md 2xl:text-2xl '>شێواز {props.stylecount}</p>
                     </div>
                     <h1 className='text-center pt-5 break-words text-slate-900 dark:text-slate-50' style={props.textstyles} >{props.text}</h1>
                 </>
